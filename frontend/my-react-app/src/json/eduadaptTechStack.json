@@ -1,0 +1,36 @@
+{
+  "project": "EduAdapt",
+  "domain": "AI/ML Education Platform",
+  "layers": [
+    {
+      "name": "Frontend",
+      "description": "User interface for students and educators",
+      "tools": ["React", "Tailwind CSS", "Recharts"]
+    },
+    {
+      "name": "Backend",
+      "description": "Handles APIs, authentication, and business logic",
+      "tools": ["Node.js", "Express", "REST APIs"]
+    },
+    {
+      "name": "AI / ML Layer",
+      "description": "Core intelligence for personalization and recommendations",
+      "tools": ["Python", "PyTorch", "TensorFlow", "NLP Models"]
+    },
+    {
+      "name": "Data Processing",
+      "description": "Cleans and transforms raw data for ML pipelines",
+      "tools": ["Pandas", "NumPy", "ETL Pipelines"]
+    },
+    {
+      "name": "Database",
+      "description": "Stores users, content, and model outputs",
+      "tools": ["MongoDB", "PostgreSQL"]
+    },
+    {
+      "name": "DevOps & Deployment",
+      "description": "Deployment, scaling, and CI/CD",
+      "tools": ["Docker", "AWS", "CI/CD", "Vercel"]
+    }
+  ]
+}

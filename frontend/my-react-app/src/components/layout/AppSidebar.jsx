@@ -1,91 +1,116 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link, useLocation } from "wouter";
+import { Menu, Sparkles, X } from "lucide-react";
+import { useState } from "react";
+import { useLocation } from "wouter";
 
-import { Button } from "@/components/ui/button";
-import { useIdeas } from "@/hooks/use-ideas";
-import { Clock, Lightbulb, Loader2, PlusCircle, Zap } from "lucide-react";
-
-export function AppSidebar() {
-  const [location] = useLocation();
-  const { data: ideas, isLoading } = useIdeas();
+export default function AppSidebar({ ideas, onIdeaClick }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [, setLocation] = useLocation();
+  const sidebarItems = ideas?.ideas || [];
 
   return (
-    <Sidebar className="border-r bg-slate-50">
-      <SidebarHeader className="p-4 pt-6">
-        <div className="flex items-center gap-2 px-2 pb-4">
-          <div className="bg-green-100 p-2 rounded-xl text-green-600">
-            <Zap className="h-5 w-5" />
+    <Sidebar
+      className={`flex flex-col h-screen shadow-xl border-r border-gray-200 transition-all ${
+        collapsed ? "w-16" : "w-72"
+      }`}
+    >
+      {/* Header */}
+      <SidebarHeader className="px-4 py-4 font-bold text-lg bg-white/80 backdrop-blur-md rounded-b-2xl flex justify-between items-center">
+        {!collapsed && (
+          <div className="inline-flex items-center gap-2  text-lg text-green-700 font-bold">
+            <Sparkles className="w-5 h-5" />
+            Launchpad
           </div>
-          <h2 className="text-xl font-bold">Launchpad</h2>
-        </div>
-
-        <Link href="/">
-                <Button className="w-full flex gap-2 bg-olive hover:bg-olive/90 text-white">
-        <PlusCircle className="h-4 w-4" />
-        New Startup Idea
-      </Button>
-        </Link>
+        )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        >
+          {collapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
+        </button>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      {/* Content */}
+      <SidebarContent className="flex-1 overflow-y-auto p-3 space-y-4">
+        {/* Actions */}
         <SidebarGroup>
-          <SidebarGroupLabel>Your Ideas</SidebarGroupLabel>
-
+    
           <SidebarMenu>
-            {isLoading ? (
-              <div className="p-4 flex justify-center">
-                <Loader2 className="h-5 w-5 animate-spin" />
-              </div>
-            ) : ideas?.length === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-gray-500">
-                <Lightbulb className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                No ideas yet. Create your first one!
-              </div>
+            <SidebarMenuItem>
+              <button
+                className={`w-full text-left px-3 py-2 rounded-2xl ${
+                  collapsed ? "text-center" : "bg-lime-600 hover:bg-lime-700"
+                } text-white font-semibold shadow-sm transition-colors`}
+                onClick={() => setLocation("/")}
+              >
+                {collapsed ? "+" : "+ New Startup Chat"}
+              </button>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* Your Ideas */}
+        <SidebarGroup>
+          {!collapsed && (
+            <SidebarGroupLabel className="text-green-700 font-medium">
+              Your Ideas
+            </SidebarGroupLabel>
+          )}
+          <SidebarMenu className="space-y-2">
+            {sidebarItems.length > 0 ? (
+              sidebarItems.map((item) => (
+                <SidebarMenuItem key={item.id}>
+                  <button
+                    className={`w-full text-left px-3 py-2 rounded-2xl shadow-sm transition-colors ${
+                      collapsed
+                        ? "text-center bg-transparent"
+                        : "bg-gradient-to-r from-lime-100 to-purple-200 hover:from-lime-200 hover:to-purple-300"
+                    }`}
+                  onClick={() => {
+  // ✅ Save selected idea
+  localStorage.setItem("generatedIdea", JSON.stringify(item));
+
+  // ✅ Notify app about change
+  window.dispatchEvent(new Event("ideaChanged"));
+
+  // ✅ Navigate
+  setLocation(`/ideas/${item.id}`);
+}}
+                  >
+                    {!collapsed ? (
+                      <>
+                        <div className="font-semibold text-gray-800">{item.startup_name}</div>
+                        {item.snippet && (
+                          <div className="text-sm text-gray-700">{item.snippet}</div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="font-semibold text-gray-800">{item.startup_name[0]}</div>
+                    )}
+                  </button>
+                </SidebarMenuItem>
+              ))
             ) : (
-              ideas?.map((idea) => {
-                const isActive = location === `/idea/${idea.id}`;
-
-                return (
-                  <SidebarMenuItem key={idea.id}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={`/idea/${idea.id}`}>
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm">
-                            {idea.title ||
-                              idea.prompt.substring(0, 30) + "..."}
-                          </span>
-
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {idea.createdAt &&
-                              new Date(
-                                idea.createdAt
-                              ).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })
+              !collapsed && <p className="p-4 text-gray-400">No startups available</p>
             )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 text-xs text-center text-gray-500">
-        Powered by AI Models
-      </SidebarFooter>
+      {/* Footer */}
+      {!collapsed && (
+        <div className="border-t border-gray-200 p-3 text-xs text-gray-500 text-center bg-white/50 backdrop-blur-md rounded-t-2xl">
+          Powered by AI
+        </div>
+      )}
     </Sidebar>
   );
 }

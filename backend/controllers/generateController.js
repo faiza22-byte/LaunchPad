@@ -1,65 +1,31 @@
-import { execFile } from "child_process";
-import path from "path";
-import { fileURLToPath } from "url";
+import fetch from "node-fetch";
 import Idea from "../models/Idea.js";
 
-// ✅ Fix __dirname for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ✅ Environment variables
+const GEMINI_API_KEY ="GEMINI_API";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
-// ✅ Absolute path to Python script
-const scriptPath = path.join(__dirname, "../utils/local_llm.py");
+// ✅ Normalize LLM output
+const normalizeGeneratedData = (data) => ({
+  startup_name: "Unknown Startup",
+  problem: "",
+  solution: "",
+  target_market: "",
+  unique_value_proposition: "",
+  revenue_streams: "",
+  key_metrics: "",
+  cost_structure: "",
+  marketing_strategy: "",
+  technology_stack: "",
+  ...data,
+});
 
-// ✅ Clean + safe JSON extractor
-const safeParseJSON = (text) => {
-  try {
-    if (!text) return null;
-
-    const cleaned = text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
-
-    const start = cleaned.indexOf("{");
-    const end = cleaned.lastIndexOf("}");
-
-    if (start === -1 || end === -1) return null;
-
-    const jsonString = cleaned.substring(start, end + 1);
-
-    return JSON.parse(jsonString);
-  } catch (err) {
-    console.warn("JSON parse failed:", err.message);
-    return null;
-  }
-};
-
-// ✅ Ensure structure
-const normalizeGeneratedData = (data) => {
-  const defaultData = {
-    startup_name: "Unknown Startup",
-    problem: "",
-    solution: "",
-    target_market: "",
-    unique_value_proposition: "",
-    revenue_streams: "",
-    key_metrics: "",
-    cost_structure: "",
-    marketing_strategy: "",
-    technology_stack: "",
-  };
-
-  if (!data || typeof data !== "object") return defaultData;
-
-  return { ...defaultData, ...data };
-};
-
-// ✅ Save + Respond helper
+// ✅ Save idea to MongoDB and respond
 const saveIdeaAndRespond = async (generatedData, req, res) => {
   const { prompt, industry, technology, budget, region, user } = req.body;
-
   const userId = user?.id || user?._id;
 
-  if (!userId) {
-    return res.status(400).json({ error: "User ID missing" });
-  }
+  if (!userId) return res.status(400).json({ error: "User ID missing" });
 
   const idea = new Idea({
     userId,
@@ -72,13 +38,22 @@ const saveIdeaAndRespond = async (generatedData, req, res) => {
   });
 
   await idea.save();
-
-  console.log("✅ Idea saved for user:", userId);
-
+  console.log("✅ Idea saved:", userId);
   res.json(generatedData);
 };
 
-// ✅ MAIN CONTROLLER
+// ✅ Clean JSON returned by Gemini (sometimes extra text)
+const cleanJSON = (text) => {
+  try {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    return JSON.parse(text.slice(start, end + 1));
+  } catch {
+    return {};
+  }
+};
+
+// ✅ Main controller
 export const generateStartupIdea = async (req, res) => {
   const { prompt, industry, technology, budget, region, user } = req.body;
 
@@ -86,16 +61,8 @@ export const generateStartupIdea = async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  try {
-    const fullPrompt = `
-Return ONLY valid JSON.
-
-Do NOT include:
-- <think>
-- explanations
-- extra text
-
-JSON format:
+  const fullPrompt = `
+Return ONLY valid JSON:
 {
   "startup_name": "...",
   "problem": "...",
@@ -109,65 +76,42 @@ JSON format:
   "technology_stack": "..."
 }
 
-Idea: ${prompt}
-Industry: ${industry}
-Technology: ${technology}
-Budget: ${budget}
-Region: ${region}
+Idea:
+- Prompt: ${prompt}
+- Industry: ${industry}
+- Technology: ${technology}
+- Budget: ${budget}
+- Region: ${region}
 `;
 
-    console.log("🚀 Using script path:", scriptPath);
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-    execFile(
-      "python",
-      [scriptPath, fullPrompt],
-      { encoding: "utf-8", maxBuffer: 1024 * 1024 * 10 },
-      async (error, stdout, stderr) => {
-        if (error) {
-          console.error("❌ ERROR:", error.message);
-          console.error("STDERR:", stderr);
-          return res.status(500).json({ error: "Local LLM failed" });
-        }
-
-        console.log("🧠 Raw LLM Output:", stdout);
-
-        let parsedData = safeParseJSON(stdout);
-
-        // 🔁 RETRY if parsing fails
-        if (!parsedData) {
-          console.log("⚠️ Retrying with stricter prompt...");
-
-          execFile(
-            "python",
-            [scriptPath, fullPrompt + "\nSTRICT: ONLY JSON"],
-            { encoding: "utf-8", maxBuffer: 1024 * 1024 * 10 },
-            async (err2, stdout2, stderr2) => {
-              if (err2) {
-                console.error("❌ Retry ERROR:", err2.message);
-                console.error("STDERR:", stderr2);
-                return res.status(500).json({ error: "Retry failed" });
-              }
-
-              console.log("🔁 Retry Output:", stdout2);
-
-              parsedData = safeParseJSON(stdout2);
-
-              const generatedData = normalizeGeneratedData(parsedData);
-
-              await saveIdeaAndRespond(generatedData, req, res);
-            }
-          );
-        } else {
-          const generatedData = normalizeGeneratedData(parsedData);
-          await saveIdeaAndRespond(generatedData, req, res);
-        }
-      }
-    );
-  } catch (err) {
-    console.error("❌ Server error:", err.message);
-
-    res.status(500).json({
-      error: "Failed to generate startup idea",
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: fullPrompt }] }],
+      }),
     });
+
+    const json = await response.json();
+
+    // 🔥 Debug log to check raw response (optional)
+    console.log("Gemini RAW:", JSON.stringify(json, null, 2));
+
+    if (!json?.candidates?.length) {
+      return res.status(500).json({ error: "No response from Gemini", raw: json });
+    }
+
+    const rawText = json.candidates[0]?.content?.parts?.[0]?.text || "{}";
+
+    const parsed = cleanJSON(rawText);
+    const data = normalizeGeneratedData(parsed);
+
+    await saveIdeaAndRespond(data, req, res);
+  } catch (err) {
+    console.error("❌ Gemini API call failed:", err);
+    res.status(500).json({ error: "Gemini API call failed", details: err.message });
   }
 };

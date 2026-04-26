@@ -1,0 +1,78 @@
+{
+  "marketing_strategy": {
+    "startup_name": "EduAdapt Lahore",
+
+    "overview": {
+      "goal": "Acquire students and onboard schools through pilot programs and partnerships",
+      "primary_channels": ["Schools", "Digital Ads", "Workshops", "Parent Engagement"],
+      "target_audience": [
+        "School administrators",
+        "Teachers",
+        "Parents of Grade 6-12 students"
+      ]
+    },
+
+    "budget_allocation": [
+      { "channel": "School Partnerships", "percentage": 35, "monthly_budget": 630 },
+      { "channel": "Workshops & Events", "percentage": 20, "monthly_budget": 360 },
+      { "channel": "Digital Ads", "percentage": 25, "monthly_budget": 450 },
+      { "channel": "Content Marketing", "percentage": 10, "monthly_budget": 180 },
+      { "channel": "Referral Programs", "percentage": 10, "monthly_budget": 180 }
+    ],
+
+    "customer_acquisition_funnel": [
+      {
+        "stage": "Awareness",
+        "channels": ["Social Media Ads", "School Outreach"],
+        "metrics": ["Impressions", "Reach"]
+      },
+      {
+        "stage": "Interest",
+        "channels": ["Workshops", "Demo Sessions"],
+        "metrics": ["Signups", "Attendance"]
+      },
+      {
+        "stage": "Conversion",
+        "channels": ["School Pilots", "Parent Subscriptions"],
+        "metrics": ["Enrollments", "Subscriptions"]
+      },
+      {
+        "stage": "Retention",
+        "channels": ["Email Campaigns", "In-app Engagement"],
+        "metrics": ["Retention Rate", "Engagement Time"]
+      }
+    ],
+
+    "campaigns": [
+      {
+        "name": "Pilot Program Launch",
+        "type": "B2B",
+        "description": "Partner with 10 public schools to test the platform",
+        "expected_impact": "High conversion to long-term contracts",
+        "visual_theme": "Professional, institutional"
+      },
+      {
+        "name": "Parent Awareness Campaign",
+        "type": "B2C",
+        "description": "Target parents via Facebook/Instagram ads",
+        "expected_impact": "Increase subscriptions",
+        "visual_theme": "Emotional, student-focused"
+      },
+      {
+        "name": "Teacher Enablement Workshops",
+        "type": "B2B2C",
+        "description": "Train teachers to use AI-based learning tools",
+        "expected_impact": "Adoption within classrooms",
+        "visual_theme": "Educational, collaborative"
+      }
+    ],
+
+    "kpis": [
+      "Customer Acquisition Cost (CAC)",
+      "Conversion Rate",
+      "Monthly Active Users",
+      "School Adoption Rate",
+      "Retention Rate"
+    ]
+  }
+}

@@ -2,33 +2,28 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "../components/ui/button";
-
+import { UserRound } from "lucide-react";
 export default function Result() {
-  const [, setLocation] = useLocation();
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [location, setLocation] = useLocation();
+ useEffect(() => {
+  const storedIdea = localStorage.getItem("generatedIdea");
 
-  useEffect(() => {
-    // Load idea from localStorage
-    const storedIdea = localStorage.getItem("generatedIdea");
-    if (storedIdea) {
-      try {
-        const parsed = JSON.parse(storedIdea);
-        setIdea(parsed);
-
-        // Ensure latest version is stored
-        localStorage.setItem("generatedIdea", JSON.stringify(parsed));
-      } catch {
-        const fallback = { rawText: storedIdea };
-        setIdea(fallback);
-        localStorage.setItem("generatedIdea", JSON.stringify(fallback));
-      }
-    } else {
-      setError("No generated idea found. Please complete all steps first.");
+  if (storedIdea) {
+    try {
+      const parsed = JSON.parse(storedIdea);
+      setIdea(parsed);
+    } catch {
+      setIdea({ rawText: storedIdea });
     }
-    setLoading(false);
-  }, []);
+  } else {
+    setError("No generated idea found. Please complete all steps first.");
+  }
+
+  setLoading(false);
+}, [location]); // ✅ now valid
 
   const handleBack = () => setLocation("/details-2");
 
@@ -49,16 +44,85 @@ export default function Result() {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-6 sm:p-12 bg-gradient-to-b from-gray-50 to-white relative">
-      {/* Back Button */}
-      <div className="w-full max-w-5xl mb-6">
-        <Button
-          onClick={handleBack}
-          className="bg-white text-black border border-gray-300 hover:bg-gray-100 flex items-center gap-2"
-        >
-          ← Back
-        </Button>
-      </div>
+     {/* Top Left Buttons */}
+<div className="absolute top-6 left-6 flex flex-col gap-3">
+  {/* Pitch Deck Button */}
+  <motion.button
+    onClick={() => setLocation("/pitch-deck")}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="relative flex items-center gap-2 px-5 py-2 rounded-full 
+               backdrop-blur-xl bg-white/30 border border-white/40 shadow-md overflow-hidden"
+  >
+    <div className="absolute inset-0 rounded-full 
+                    bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 
+                    opacity-25 blur-xl animate-pulse" />
+    <span className="relative text-sm font-semibold text-gray-900">
+      Pitch Deck
+    </span>
+    <motion.span
+      animate={{ rotate: [0, 15, -15, 0] }}
+      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      className="text-gray-900"
+    >
+      ↗
+    </motion.span>
+  </motion.button>
 
+  {/* Get Landing Page Button */}
+  <motion.button
+    onClick={() => setLocation("/page")}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="relative flex items-center gap-2 px-5 py-2 rounded-full 
+               backdrop-blur-xl bg-white/30 border border-white/40 shadow-md overflow-hidden"
+  >
+    <div className="absolute inset-0 rounded-full 
+                    bg-gradient-to-r from-green-400 via-emerald-400 to-lime-400 
+                    opacity-25 blur-xl animate-pulse" />
+    <span className="relative text-sm font-semibold text-gray-900">
+      Get Landing Page
+    </span>
+  </motion.button>
+</div>
+    {/* Top Right Validate Button */}
+    <div className="absolute top-6 right-6">
+      <motion.button
+        onClick={() => setLocation("/trends")}
+        initial={{ opacity: 1, scale: 1 }}
+        animate={{
+          scale: [1, 1.03, 1],
+          boxShadow: [
+            "0 0 10px rgba(99,102,241,0.2)",
+            "0 0 25px rgba(168,85,247,0.4)",
+            "0 0 10px rgba(99,102,241,0.2)"
+          ]
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="relative flex items-center gap-3 px-6 py-3 rounded-full backdrop-blur-xl bg-white/30 border border-white/40 shadow-lg overflow-hidden"
+      >
+        {/* Glow Background */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 opacity-25 blur-xl" />
+    
+        {/* Avatar */}
+        <motion.div
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="relative w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md"
+        >
+          <UserRound className="w-5 h-5 text-white" />
+        </motion.div>
+    
+        {/* Bold Text */}
+        <span className="relative text-base font-extrabold text-gray-900 tracking-wide">
+          Validate Your Idea
+        </span>
+      </motion.button>
+    </div>
       {/* Startup Name */}
       {idea.startup_name && (
         <motion.h1

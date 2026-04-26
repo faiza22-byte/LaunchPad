@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGear Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --secondary-gradient: linear-gradient(135deg, #FF6F61 0%, #DE4F6C 100%);
+            --tertiary-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+            --dark-bg: #1a1a2e;
+            --dark-card: #272740;
+            --text-light: #e0e0e0;
+            --text-dark: #333;
+            --accent-blue: #2575fc;
+            --accent-purple: #6a11cb;
+            --transition-speed: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            background-color: var(--dark-bg);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Utility Classes */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            background: var(--primary-gradient);
+            transition: all var(--transition-speed);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all var(--transition-speed);
+            z-index: -1;
+            transform: skewX(-20deg);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            background-color: var(--dark-card);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(var(--accent-blue-rgb), 0.05) 0%, rgba(var(--accent-purple-rgb), 0.05) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+            z-index: -1;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 3.2em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        h3 {
+            font-size: 2.2em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(26, 26, 46, 0.9);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background-color var(--transition-speed);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links li {
+            display: inline-block;
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05em;
+            position: relative;
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            bottom: -5px;
+            left: 0;
+            transition: width var(--transition-speed);
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        #hero {
+            background: url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80') no-repeat center center/cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.8) 0%, rgba(37, 117, 252, 0.4) 100%);
+        }
+
+        #hero .hero-content {
+            z-index: 10;
+            max-width: 900px;
+        }
+
+        #hero h1 {
+            font-size: 5em;
+            margin-bottom: 20px;
+            background: var(--tertiary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            animation: fadeInTop 1s forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        #hero p.tagline {
+            font-size: 1.7em;
+            margin-bottom: 40px;
+            color: #ccc;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        #hero .btn {
+            font-size: 1.2em;
+            padding: 18px 35px;
+            animation: fadeInBottom 1s forwards;
+            animation-delay: 0.9s;
+            opacity: 0;
+        }
+
+        /* General Section Styling */
+        section {
+            background-color: var(--dark-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        section:nth-child(even) {
+            background-color: #20203a;
+        }
+
+        /* Section Layouts */
+        .grid-2, .grid-3 {
+            display: grid;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .icon-box img {
+            width: 50px;
+            height: 50px;
+            margin-right: 20px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Specific Section Styles */
+        #problem, #solution, #target-market, #value-prop, #revenue-streams, #key-metrics, #cta {
+            position: relative;
+            z-index: 1;
+        }
+
+        #problem .card p {
+            font-size: 1.2em;
+            color: #c0c0c0;
+        }
+
+        #solution .grid-2 .card, #value-prop .grid-2 .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #target-market ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        #target-market ul li {
+            background: var(--dark-card);
+            border-radius: 50px;
+            padding: 12px 25px;
+            margin: 10px;
+            font-weight: 500;
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            transition: all var(--transition-speed);
+        }
+
+        #target-market ul li:hover {
+            background: var(--primary-gradient);
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #revenue-streams .grid-3 .card {
+            text-align: center;
+        }
+
+        #revenue-streams .grid-3 .card h4 {
+            font-size: 1.5em;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        #key-metrics .metric-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            background-color: var(--dark-card);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform var(--transition-speed), background-color var(--transition-speed);
+        }
+
+        #key-metrics .metric-item:hover {
+            transform: translateX(10px);
+            background-color: #2e2e4f;
+        }
+
+        #key-metrics .metric-item .icon {
+            width: 60px;
+            height: 60px;
+            min-width: 60px; /* Ensure icon doesn't shrink */
+            margin-right: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: #fff;
+            font-size: 1.8em;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #key-metrics .metric-item h4 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        #key-metrics .metric-item p {
+            font-size: 0.95em;
+            margin-bottom: 0;
+            color: #c0c0c0;
+        }
+
+        #cta {
+            background: var(--primary-gradient);
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 0 auto;
+            max-width: 1000px;
+            margin-bottom: 100px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        #cta h2 {
+            font-size: 3.5em;
+            color: #fff;
+            -webkit-text-fill-color: initial;
+            margin-bottom: 30px;
+        }
+
+        #cta p {
+            font-size: 1.5em;
+            color: #e0e0e0;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #cta .btn {
+            background: #fff;
+            color: var(--accent-blue);
+            padding: 18px 40px;
+            font-size: 1.3em;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        #cta .btn:hover {
+            color: var(--accent-purple);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #121220;
+            padding: 60px 0;
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        footer p {
+            margin-bottom: 10px;
+            color: #a0a0a0;
+        }
+
+        footer .social-links a {
+            color: #a0a0a0;
+            font-size: 1.5em;
+            margin: 0 15px;
+            transition: color var(--transition-speed);
+        }
+
+        footer .social-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInTop {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInBottom {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .animated-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            #hero h1 {
+                font-size: 3.5em;
+            }
+
+            #hero p.tagline {
+                font-size: 1.4em;
+            }
+
+            h2 {
+                font-size: 2.5em;
+            }
+
+            h3 {
+                font-size: 1.8em;
+            }
+
+            .navbar .container {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                margin-top: 20px;
+            }
+
+            .nav-links li {
+                margin: 0 15px;
+            }
+
+            .section-padding {
+                padding: 80px 0;
+            }
+
+            .card {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #hero h1 {
+                font-size: 2.8em;
+            }
+
+            #hero p.tagline {
+                font-size: 1.2em;
+            }
+
+            h2 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links li {
+                margin: 5px 10px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            #cta h2 {
+                font-size: 2.5em;
+            }
+
+            #cta p {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #hero h1 {
+                font-size: 2.2em;
+            }
+
+            #hero p.tagline {
+                font-size: 1em;
+            }
+
+            .navbar-brand {
+                font-size: 1.5em;
+            }
+
+            .nav-links li {
+                margin: 5px 8px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .icon-box img {
+                width: 40px;
+                height: 40px;
+                margin-right: 15px;
+            }
+
+            #key-metrics .metric-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            #key-metrics .metric-item .icon {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="navbar-brand">TechGear Pro</a>
+            <ul class="nav-links">
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#target-market">Market</a></li>
+                <li><a href="#value-prop">Value</a></li>
+                <li><a href="#revenue-streams">Revenue</a></li>
+                <li><a href="#key-metrics">Metrics</a></li>
+                <li><a href="#cta">Join Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="hero">
+        <div class="hero-content">
+            <h1>TechGear Pro</h1>
+            <p class="tagline">Empowering the next generation of technicians, globally.</p>
+            <a href="#cta" class="btn">Get Started</a>
+        </div>
+    </header>
+
+    <section id="problem" class="section-padding text-center">
+        <div class="container">
+            <h2 class="animated-card">The Global Challenge for Young Technicians</h2>
+            <div class="card animated-card">
+                <h3>Lack of Access & Support</h3>
+                <p>Young technicians globally often struggle to find specialized tools, genuine parts, and up-to-date technical resources at competitive prices.</p>
+                <p>Generic e-commerce platforms lack the niche focus, personalization, and community support essential for their professional growth and project success.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="solution" class="section-padding">
+        <div class="container text-center">
+            <h2 class="animated-card">Our Innovative Solution</h2>
+            <div class="grid-2">
+                <div class="card animated-card">
+                    <h3>AI-Powered Marketplace</h3>
+                    <p>A global e-commerce platform offering a curated marketplace for specialized tools and parts. Personalized recommendations driven by AI ensure technicians find exactly what they need, quickly and affordably.</p>
+                </div>
+                <div class="card animated-card">
+                    <h3>Community & Learning Hub</h3>
+                    <p>Integrated access to learning resources and a vibrant community for peer support, mentorship, and opportunities. Connect, learn, and grow with fellow technicians worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="target-market" class="section-padding text-center">
+        <div class="container">
+            <h2 class="animated-card">Who We Serve</h2>
+            <p class="animated-card">Young technicians (18-35) across various technical fields globally, including:</p>
+            <ul class="animated-card">
+                <li>Automotive</li>
+                <li>Electronics Repair</li>
+                <li>IT Support</li>
+                <li>HVAC</li>
+                <li>Industrial Maintenance</li>
+                <li>Renewable Energy</li>
+                <li>Robotics</li>
+                <li>Technical Students</li>
+                <li>Freelance Technicians</li>
+                <li>Recent Graduates</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="value-prop" class="section-padding">
+        <div class="container text-center">
+            <h2 class="animated-card">Our Unique Value Proposition</h2>
+            <div class="grid-2">
+                <div class="card animated-card">
+                    <h3>Hyper-Specialized & AI-Driven</h3>
+                    <p>Unlike generic marketplaces, TechGear Pro offers a hyper-specialized, AI-driven e-commerce experience providing personalized recommendations for tools, parts, and educational content.</p>
+                </div>
+                <div class="card animated-card">
+                    <h3>Community & Career Advancement</h3>
+                    <p>We combine our marketplace with a powerful community and learning platform, offering career advancement opportunities and a global network of peers and mentors, all tailored to the evolving needs of young technicians.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="revenue-streams" class="section-padding text-center">
+        <div class="container">
+            <h2 class="animated-card">How We Generate Revenue</h2>
+            <div class="grid-3">
+                <div class="card animated-card">
+                    <h4>Direct Sales & Markup</h4>
+                    <p>Markup on specialized tools and parts sold directly through our curated marketplace.</p>
+                </div>
+                <div class="card animated-card">
+                    <h4>Subscription Tiers</h4>
+                    <p>Premium access to advanced learning content, analytics, and enhanced community features like direct mentorship.</p>
+                </div>
+                <div class="card animated-card">
+                    <h4>Job Placement Commissions</h4>
+                    <p>Commission on successful job placements or freelance project matching within the platform.</p>
+                </div>
+                <div class="card animated-card">
+                    <h4>Targeted Advertising</h4>
+                    <p>Advertising for manufacturers and training providers offering complementary products/services to our niche audience.</p>
+                </div>
+                <div class="card animated-card">
+                    <h4>Data Insights</h4>
+                    <p>Anonymized and aggregated market trend data sold to manufacturers for product development.</p>
+                </div>
+                <div class="card animated-card">
+                    <h4>Affiliate Partnerships</h4>
+                    <p>Partnerships with compatible services or product lines that benefit our user base.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="key-metrics" class="section-padding text-center">
+        <div class="container">
+            <h2 class="animated-card">Measuring Our Success</h2>
+            <div class="grid-2">
+                <div class="metric-item animated-card">
+                    <div class="icon">📈</div>
+                    <div>
+                        <h4>Gross Merchandise Value (GMV)</h4>
+                        <p>Total value of goods sold through the platform.</p>
+                    </div>
+                </div>
+                <div class="metric-item animated-card">
+                    <div class="icon">👥</div>
+                    <div>
+                        <h4>Active Users</h4>
+                        <p>Number of buyers, sellers, and community participants actively engaging.</p>
+                    </div>
+                </div>
+                <div class="metric-item animated-card">
+                    <div class="icon">🛒</div>
+                    <div>
+                        <h4>Conversion Rate</h4>
+                        <p>Percentage of users who browse and then complete a purchase.</p>
+                    </div>
+                </div>
+                <div class="metric-item animated-card">
+                    <div class="icon">💬</div>
+                    <div>
+                        <h4>User Engagement</h4>
+                        <p>Time spent on platform, forum activity, and content consumption.</p>
+                    </div>
+                </div>
+                <div class="metric-item animated-card">
+                    <div class="icon">🤝</div>
+                    <div>
+                        <h4>Job/Freelance Matches</h4>
+                        <p>Number of successful connections between technicians and opportunities.</p>
+                    </div>
+                </div>
+                <div class="metric-item animated-card">
+                    <div class="icon">⭐</div>
+                    <div>
+                        <h4>Net Promoter Score (NPS)</h4>
+                        <p>Measures customer loyalty and satisfaction with TechGear Pro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta" class="animated-card">
+        <div class="container">
+            <h2>Ready to Elevate Your Craft?</h2>
+            <p>Join TechGear Pro today and unlock a world of specialized tools, parts, knowledge, and unparalleled community support.</p>
+            <a href="#" class="btn">Sign Up Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 TechGear Pro. All rights reserved.</p>
+            <p>Made with ❤️ for technicians worldwide.</p>
+            <div class="social-links">
+                <a href="#"><img src="https://img.icons8.com/ios-filled/24/a0a0a0/twitterx.png" alt="Twitter"/></a>
+                <a href="#"><img src="https://img.icons8.com/ios-filled/24/a0a0a0/instagram-new.png" alt="Instagram"/></a>
+                <a href="#"><img src="https://img.icons8.com/ios-filled/24/a0a0a0/linkedin.png" alt="LinkedIn"/></a>
+                <a href="#"><img src="https://img.icons8.com/ios-filled/24/a0a0a0/facebook-new.png" alt="Facebook"/></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Intersection Observer for fade-in animations
+            const animatedElements = document.querySelectorAll('.animated-card');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, observerOptions);
+
+            animatedElements.forEach(el => observer.observe(el));
+
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.style.backgroundColor = 'rgba(26, 26, 46, 0.95)';
+                    navbar.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)';
+                } else {
+                    navbar.style.backgroundColor = 'rgba(26, 26, 46, 0.9)';
+                    navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.3)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

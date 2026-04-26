@@ -7,7 +7,7 @@ export function SidebarProvider({ children }) {
 
   return (
     <SidebarContext.Provider value={{ open, setOpen }}>
-      <div className="flex">{children}</div>
+      {children}
     </SidebarContext.Provider>
   );
 }

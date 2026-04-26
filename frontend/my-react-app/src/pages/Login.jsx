@@ -41,7 +41,8 @@ export default function Login() {
     );
 
     localStorage.setItem("token", data.token);
-
+    // 🔴 trigger refresh in AppLayout
+window.dispatchEvent(new Event("userChanged"));
     // Redirect
     setLocation("/");
   } catch (err) {

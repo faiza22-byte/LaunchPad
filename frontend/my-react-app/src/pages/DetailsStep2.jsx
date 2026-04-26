@@ -162,23 +162,43 @@ export default function DetailsStep2() {
 
         {/* BUTTON */}
         <Button
-          onClick={handleGenerate}
-          className="w-full py-4 bg-gradient-to-r from-primary to-purple-500 hover:shadow-lg text-white font-semibold rounded-2xl transition-all"
-          disabled={
-            loading ||
-            !budget ||
-            !region ||
-            (budget === "Other" && !customBudget.trim()) ||
-            (region === "Other" && !customRegion.trim())
-          }
-        >
-          {loading ? "Generating..." : "Generate Ideas 🚀"}
-        </Button>
+  onClick={handleGenerate}
+  className="w-full py-4 bg-gradient-to-r from-primary to-purple-500 hover:shadow-lg text-white font-semibold rounded-2xl transition-all"
+  disabled={
+    loading ||
+    !budget ||
+    !region ||
+    (budget === "Other" && !customBudget.trim()) ||
+    (region === "Other" && !customRegion.trim())
+  }
+>
+  Generate Idea 
+</Button>
       </div>
 
       {/* DECOR */}
       <div className="absolute top-10 left-10 w-16 h-16 bg-purple-200 rounded-full opacity-30 animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-24 h-24 bg-pink-200 rounded-full opacity-20 animate-pulse pointer-events-none" />
+      {loading && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md">
+    
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl px-10 py-8 flex flex-col items-center gap-4 animate-fadeIn">
+      
+      {/* Spinner */}
+      <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+
+      {/* Text */}
+      <h3 className="text-white text-lg font-semibold tracking-wide">
+        Generating your idea...
+      </h3>
+
+      <p className="text-white/70 text-sm text-center">
+        We are crafting something amazing for you 
+      </p>
     </div>
+  </div>
+)}
+    </div>
+    
   );
 }

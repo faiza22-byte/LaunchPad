@@ -1,0 +1,95 @@
+{
+  "cost_structure": {
+    "startup_name": "EduAdapt Lahore",
+
+    "currency": "USD",
+
+    "monthly_costs": {
+      "categories": [
+        {
+          "name": "Cloud Infrastructure",
+          "monthly_cost": 1500,
+          "breakdown": {
+            "compute": 800,
+            "storage": 300,
+            "cdn": 200,
+            "database": 200
+          }
+        },
+        {
+          "name": "AI Model Development & Maintenance",
+          "monthly_cost": 4000,
+          "breakdown": {
+            "training": 2000,
+            "inference": 1500,
+            "gpu_compute": 500
+          }
+        },
+        {
+          "name": "Content Development",
+          "monthly_cost": 2000,
+          "breakdown": {
+            "curriculum_mapping": 800,
+            "video_content": 700,
+            "localization": 500
+          }
+        },
+        {
+          "name": "Product Development",
+          "monthly_cost": 5000,
+          "breakdown": {
+            "frontend": 1500,
+            "backend": 2000,
+            "ui_ux": 800,
+            "qa_testing": 700
+          }
+        },
+        {
+          "name": "Marketing & User Acquisition",
+          "monthly_cost": 1800,
+          "breakdown": {
+            "school_partnerships": 800,
+            "workshops": 400,
+            "digital_ads": 600
+          }
+        },
+        {
+          "name": "Operations & Support",
+          "monthly_cost": 1200,
+          "breakdown": {
+            "support_team": 700,
+            "admin": 300,
+            "tools": 200
+          }
+        }
+      ]
+    },
+
+    "summary": {
+      "total_monthly_cost": 15500,
+
+      "cost_distribution_percentage": {
+        "Cloud Infrastructure": 9.7,
+        "AI Model Development & Maintenance": 25.8,
+        "Content Development": 12.9,
+        "Product Development": 32.2,
+        "Marketing & User Acquisition": 11.6,
+        "Operations & Support": 7.8
+      },
+
+      "fixed_vs_variable": {
+        "fixed_costs": 9000,
+        "variable_costs": 6500
+      },
+
+      "monthly_projection": [
+        { "month": "Month 1", "cost": 15500 },
+        { "month": "Month 2", "cost": 16200 },
+        { "month": "Month 3", "cost": 17800 },
+        { "month": "Month 4", "cost": 19000 },
+        { "month": "Month 5", "cost": 21000 },
+        { "month": "Month 6", "cost": 23000 }
+      ]
+    }
+  }
+}
